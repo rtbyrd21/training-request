@@ -6,18 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines":{
-    "node":"0.12.x",
+  "engines": {
+    "node": "0.12.x",
     "npm": "2.11.x"
   },
   "author": "Rob Byrd",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.1",
+    "cookie-parser": "^1.3.5",
     "express": "^4.13.0",
+    "express-session": "^1.11.3",
     "jade": "^1.11.0",
     "mongoose": "^4.0.6",
     "morgan": "^1.6.0",
+    "passport": "^0.2.2",
+    "passport-local": "^1.0.0",
     "stylus": "^0.51.1"
   }
 }
