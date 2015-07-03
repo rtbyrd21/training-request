@@ -26,22 +26,25 @@ app.use(stylus.middleware(
 ));
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://localhost/training')
+
+if(env === 'development'){
+    mongoose.connect('mongodb://localhost/training');
+}else{
+mongoose.connect('mongodb://rtbyrd21:Holden21!@apollo.modulusmongo.net:27017/t4agoWom');
+}
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error....'));
 db.once('open', function callback(){
     console.log('training db opened');
 });
-
+//mongodb://<user>:<pass>@apollo.modulusmongo.net:27017/t4agoWom
 var messageSchema = mongoose.Schema({message:String});
 var Message = mongoose.model('Message', messageSchema);
 var mongoMessage;
 Message.findOne().exec(function(err, messageDoc){
     mongoMessage = messageDoc.message;
-    console.log(messageDoc);
 });
-
-
 
 app.get('/partials/:partialPath', function(req, res){
     res.render('partials/' + req.params.partialPath);
@@ -54,7 +57,7 @@ app.get('*', function(req, res) {
     })
 });
 
-var port = 3030;
+var port = process.env.PORT || 3030;
 app.listen(port);
 
 console.log('Listening on port ' + port + '....');
