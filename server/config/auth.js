@@ -2,6 +2,7 @@
 var passport = require('passport');
 
 exports.authenticate = function(req, res, next){
+    req.body.username = req.body.username.toLowerCase();
     var auth = passport.authenticate('local', function(err, user){
         console.log(user);
         if(err) {return next(err);}
@@ -25,6 +26,7 @@ exports.requiresApiLogin = function(req, res, next){
 
 exports.requiresRole = function (role) {
     return function(req, res, next){
+        console.log('mmmhm');
         if(!req.isAuthenticated() || req.user.roles.indexOf(role) === -1){
             res.status(403);
             res.end();

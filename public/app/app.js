@@ -5,6 +5,9 @@ angular.module('app').config(function($routeProvider, $locationProvider){
     var routeRoleChecks = {
         admin: {auth: function(trAuth){
             return trAuth.authorizeCurrentUserForRoute('admin');
+        }},
+        user: {auth: function(trAuth){
+            return trAuth.authorizeAuthenticatedUserForRoute();
         }}
     }
 
@@ -18,7 +21,24 @@ angular.module('app').config(function($routeProvider, $locationProvider){
         templateUrl: 'partials/admin/user-list',
         controller: 'trUserListCtrl',
         resolve: routeRoleChecks.admin
-    });
+    })
+        .when('/signup', {
+            templateUrl: 'partials/account/signup',
+            controller: 'trSignupCtrl'
+        })
+        .when('/profile', {
+            templateUrl: 'partials/account/profile',
+            controller: 'trProfileCtrl',
+            resolve: routeRoleChecks.user
+        })
+        .when('/courses', {
+            templateUrl: 'partials/courses/courses-list',
+            controller: 'trCourseListCtrl'
+        })
+        .when('/courses/:id', {
+            templateUrl: 'partials/courses/course-detail',
+            controller: 'trCourseDetailCtrl'
+        });
 
 });
 

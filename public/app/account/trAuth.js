@@ -16,6 +16,33 @@ angular.module('app').factory('trAuth', function($http, trIdentity, trUser, $q){
            return dfd.promise;
        },
 
+       createUser: function(newUserData){
+            var newUser = new trUser(newUserData);
+            var dfd = $q.defer();
+
+           newUser.$save().then(function(){
+               trIdentity.currentUser = newUser;
+               dfd.resolve();
+           }, function(response){
+               dfd.reject(response.data.reason);
+           });
+
+           return dfd.promise;
+       },
+        
+       updateCurrentUser: function (newUserData) {
+            var dfd = $q.defer();
+           var clone = angular.copy(trIdentity.currentUser);
+            angular.extend(clone, newUserData);
+           clone.$update().then(function(){
+                trIdentity.currentUser = clone;
+                dfd.resolve();
+           }, function(response){
+                dfd.reject(response.data.reason);
+               });
+           return dfd.promise;
+       },
+       
        logoutUser: function () {
            var dfd = $q.defer();
             $http.post('/logout', {logout:true})
@@ -29,6 +56,13 @@ angular.module('app').factory('trAuth', function($http, trIdentity, trUser, $q){
            if(trIdentity.isAuthorized(role)){
                return true;
            }else{
+               return $q.reject('not authorized');
+           }
+       },
+       authorizeAuthenticatedUserForRoute: function(){
+           if(trIdentity.isAuthenticated()){
+               return true;
+           } else {
                return $q.reject('not authorized');
            }
        }
