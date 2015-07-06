@@ -6,6 +6,7 @@ var express = require('express'),
     session = require('express-session'),
     passport = require('passport');
 
+
 module.exports = function(app, config) {
     function compile(str, path) {
         return stylus(str).set('filename', path);
