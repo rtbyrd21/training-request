@@ -3,7 +3,9 @@ module.exports = function(){
   var client = './public/';
   var clientApp = client + 'app/';
   var server = './server/';
-  var temp = './.tmp/';
+  var temp = client + 'tmp/';
+  var tempClean = client + 'tmp/';
+  var build = './build/';
   var config = {
 
 
@@ -17,7 +19,15 @@ module.exports = function(){
           './server/**/*.js',
           './*.js'
       ],
+      assetDirectory: build + 'app/layout.html',
+      build: build,
       client: client,
+      fonts: client + 'vendor/components-font-awesome/fonts/**/*.*',
+      images: client + 'images/**/*.*',
+      html: '**/*.html',
+      tempClean: tempClean,
+      htmltemplates: build + '**/*.html',
+      jade: clientApp + '**/*.jade',
       layout: server + 'includes/layout.jade',
       includes: server + 'includes/',
       css: temp + 'styles.css',
@@ -27,8 +37,29 @@ module.exports = function(){
       ],
       sass: client + 'styles/styles.scss',
       server: ['./server/', 'server.js'],
+      temp: temp,
 
-    temp: temp,
+      /*
+       * templateCache
+       */
+      templateCache: {
+          file: 'templates.js',
+          options: {
+              module: 'app',
+              standAlone: false,
+              root: 'partials/',
+              transformUrl: function(url) {
+                  return url.replace('.html', '').replace('/app', '')
+              }
+          }
+      },
+
+      /*
+       * Browser sync
+       */
+
+      browserReloadDelay: 1000,
+
       /*
        * Bower and NPM locations
        */

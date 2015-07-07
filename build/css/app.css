@@ -1,8 +1,8 @@
-h1 {
-  padding: 10px; }
+body {
+  padding-top: 120px; }
 
 h2 {
-  color: #0000cc; }
+  color: black; }
 
 .style-test {
   -webkit-transform-origin: center bottom;

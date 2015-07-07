@@ -1,12 +1,23 @@
 
 var gulp = require('gulp'),
     args = require('yargs').argv,
+    browserSync = require('browser-sync');
     config = require('./gulp.config')(),
     del = require('del'),
     $ = require('gulp-load-plugins')({lazy:true}),
     port = process.env.PORT || config.defaultPort;
 
+gulp.task('help', $.taskListing);
+gulp.task('default', ['help']);
 
+
+gulp.task('serve-build', ['optimize'], function(){
+    serve(false);
+})
+
+gulp.task('serve-dev', ['inject'], function() {
+    serve(true);
+});
 
 gulp.task('vet', function(){
         log('Analyzing source with JSHint and JSCS')
@@ -29,8 +40,45 @@ gulp.task('styles', ['clean-styles'], function(){
         .pipe(gulp.dest(config.temp));
 });
 
+
+gulp.task('fonts', ['clean-fonts'], function(){
+    log('Copying fonts');
+    return gulp.src(config.fonts)
+        .pipe(gulp.dest(config.build + 'fonts'));
+});
+
+gulp.task('images', ['clean-images'], function(){
+    log('Copying and compressing the images');
+    return gulp.src(config.images)
+        .pipe($.imagemin({optimization: 4}))
+        .pipe(gulp.dest(config.build + 'images'));
+});
+
+gulp.task('clean', function(done){
+    var delconfig = [].concat(config.build, config.tempClean);
+    log('Cleaning: ' + $.util.colors.blue(delconfig));
+    del(delconfig, done);
+});
+
+gulp.task('clean-fonts', function(done){
+    clean(config.build + 'fonts/**/*.*', done);
+});
+
+gulp.task('clean-images', function(done){
+    clean(config.build + 'images/**/*.*', done);
+});
+
 gulp.task('clean-styles', function(done){
-    var files = config.temp + '**/*.css';
+    clean(config.tempClean + '**/*.css', done);
+});
+
+gulp.task('clean-code', function(done){
+    var files = [].concat(
+        config.temp + '**/*.js',
+        config.build + '**/*.html',
+        config.build + 'js/**/*.js'
+    );
+
     clean(files, done);
 });
 
@@ -38,7 +86,31 @@ gulp.task('sass-watcher', function(){
     gulp.watch([config.sass], ['styles']);
 });
 
+gulp.task('templates', function(done) {
 
+    return gulp.src(config.jade)
+        .pipe($.jade({
+            pretty: true
+        }))
+        .pipe(gulp.dest(config.build + '/app'))
+});
+
+
+
+
+gulp.task('templatecache', ['templates'], function(){
+    log('Creating AngularJS $templatecache');
+
+    return gulp
+        .src(config.htmltemplates)
+        .pipe($.minifyHtml({empty:true}))
+        .pipe($.angularTemplatecache(
+            config.templateCache.file,
+            config.templateCache.options
+        ))
+        .pipe(gulp.dest(config.temp));
+
+});
 
 gulp.task('wiredep', function(){
     log('wire up the bower css and js and our app js into the html');
@@ -55,7 +127,8 @@ gulp.task('wiredep', function(){
         .pipe(gulp.dest(config.includes))
 });
 
-gulp.task('inject', ['wiredep', 'styles'], function(){
+
+gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function(){
     log('wire up the bower css and js and our app js into the html');
 
     var source = config.css;
@@ -68,41 +141,146 @@ gulp.task('inject', ['wiredep', 'styles'], function(){
         .pipe(gulp.dest(config.includes))
 });
 
-gulp.task('serve-dev', ['inject'], function() {
-    var isDev = true;
+
+
+
+//1
+
+gulp.task('optimize', ['inject', 'templates'], function(done){
+    log('Optimizing the javascript, css, html');
+    var templateCache = config.temp + config.templateCache.file;
+
+    return gulp
+        .src(config.layout)
+        .pipe($.plumber())
+        .pipe($.inject(gulp.src(templateCache, {read:false}), {
+            starttag: '//- inject:templates',
+            ignorePath: 'public'
+        }))
+        .pipe(gulp.dest(config.build + 'app/'));
+})
+
+//2 //.tmp folder causing issues
+
+gulp.task('get-asset-directory', function(done) {
+
+    return gulp.src(config.build + '/app/layout.jade')
+        .pipe($.jade({
+            pretty: true
+        }))
+        .pipe(gulp.dest(config.build + '/app'))
+});
+
+//3
+
+gulp.task('build-assets-production',  function(){
+    log('Pulling in files based on script tags');
+    var assets = $.useref.assets({searchPath: './public'});
+
+    return gulp
+        .src(config.assetDirectory)
+        .pipe(assets)
+        .pipe(assets.restore())
+        .pipe($.useref())
+        .pipe(gulp.dest(config.build));
+});
+
+//4
+
+gulp.task('set-back-to-jade', function(){
+    gulp.src(config.build + 'layout.html')
+        .pipe($.html2jade())
+        .pipe(gulp.dest(config.build + '/app'));
+});
+
+
+
+
+///////////////
+
+function serve(isDev){
 
     var nodeOptions = {
         script: config.nodeServer,
         delayTime: 1,
         env: {
             'PORT': port,
-            'NODE_ENV': isDev ? 'dev' : 'build'
+            'NODE_ENV': isDev ? 'development' : 'build'
         },
         watch: [config.server]
-};
+    };
 
-return $.nodemon(nodeOptions)
-    .on('restart', function(ev) {
-        log('*** nodemon restarted');
-        log('files changed on restart:\n' + ev);
-    })
-    .on('start', function() {
-        log('*** nodemon started');
-    })
-    .on('crash', function() {
-        log('*** nodemon crashed: script crashed for some reason');
-    })
-    .on('exit', function() {
-        log('*** nodemon exited cleanly');
-    });
+    return $.nodemon(nodeOptions)
+        .on('restart', function(ev) {
+            log('*** nodemon restarted');
+            log('files changed on restart:\n' + ev);
+            setTimeout(function(){
+                browserSync.notify('reloading now....');
+                browserSync.reload({stream:false});
+            }, config.browserReloadDelay)
+        })
+        .on('start', function() {
+            log('*** nodemon started');
+            startBrowserSync(isDev);
+        })
+        .on('crash', function() {
+            log('*** nodemon crashed: script crashed for some reason');
+        })
+        .on('exit', function() {
+            log('*** nodemon exited cleanly');
+        });
+}
 
-});
+
+function changeEvent(event){
+    var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
+    log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+}
+
+function startBrowserSync(isDev){
+    if(args.nosync || browserSync.active){
+        return;
+    }
+    log('Starting browser sync on port '  + port);
+
+    if(isDev){
+        gulp.watch([config.sass], ['styles'])
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    }else{
+        gulp.watch([config.sass, config.js, config.jade], ['optimize', browserSync.reload])
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    }
 
 
 
-///////////////
+    var options = {
+        proxy: 'localhost:' + port,
+        port: 3000,
+        files: isDev ? [
+            config.client + '**/*.*',
+            '!' + config.sass,
+            config.temp + '**/*.css'
+        ] : [],
+        ghostMode: {
+            clicks: true,
+            location: false,
+            forms: true,
+            scroll: true
+        },
+        injectChanges: true,
+        logFileChanges: true,
+        logLevel: 'debug',
+        logPrefix: 'gulp-patterns',
+        notify: true,
+        reloadDelay: 0
+    }
 
-
+    browserSync(options);
+}
 
 function clean(path, done){
     log('Cleaning: ' + $.util.colors.blue(path));

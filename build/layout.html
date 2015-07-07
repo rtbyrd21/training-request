@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--link(href="/favicon.ico", rel="shortcut icon", type="image/x-icon")-->
+    <title>Fusion Alliance Training Request</title>
+    <link rel="stylesheet" href="css/lib.css">
+    
+    <link rel="stylesheet" href="css/app.css">
+    <base href="/">
+    <body ng-app="app"></body>
+    <!--block main-content-->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header"><a href="/" class="navbar-brand">Training Request
+            <h6>Training Request Form</h6></a></div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/courses">Courses</a></li>
+          </ul>
+          <div ng-include="'partials/account/navbar-login'"></div>
+        </div>
+      </div>
+    </div>
+    <section class="content">
+      <div ng-view></div>
+    </section>
+    <footer class="container text-center"></footer>
+    <script src="js/lib.js"></script>
+    <script src="js/app.js"></script>
+    
+    
+  </head>
+</html>

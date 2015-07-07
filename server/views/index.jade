@@ -1,19 +1,23 @@
-extend ../includes/layout
+include  ../includes/scripts
 
-block main-content
-    .navbar.navbar-inverse.navbar-fixed-top
-        .container
-            .navbar-header
-                a.navbar-brand(href="/") Training Request
-                    h6 Training Request Form
-            .navbar-collapse.collapse
-                ul.nav.navbar-nav
-                    li
-                        a(href="/") Home
-                    li
-                        a(href="/courses") Courses
-                div(ng-include="'/partials/account/navbar-login'")
-    section.content
-        div(ng-view)
 
-    footer.container.text-center
+
+//extend ../../build/app/layout
+
+//block main-content
+//    .navbar.navbar-inverse.navbar-fixed-top
+//        .container
+//            .navbar-header
+//                a.navbar-brand(href="/") Training Request
+//                    h6 Training Request Form
+//            .navbar-collapse.collapse
+//                ul.nav.navbar-nav
+//                    li
+//                        a(href="/") Home
+//                    li
+//                        a(href="/courses") Courses
+//                div(ng-include="'/partials/account/navbar-login'")
+//    section.content
+//        div(ng-view)
+//
+//    footer.container.text-center

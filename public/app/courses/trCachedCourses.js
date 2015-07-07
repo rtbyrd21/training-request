@@ -8,7 +8,6 @@ angular.module('app').factory('trCachedCourses', function(trCourse){
             }
 
             return courseList;
-
         }
     }
 })

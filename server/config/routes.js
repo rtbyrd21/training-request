@@ -3,7 +3,11 @@ var auth = require('./auth'),
     users = require('../controllers/users'),
     courses = require('../controllers/courses'),
     mongoose = require('mongoose'),
-    Users = mongoose.model('User');
+    env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+    var environment = function(x){
+        return x === 'development';
+    }
 
 module.exports = function(app) {
 
@@ -16,6 +20,7 @@ module.exports = function(app) {
     app.get('/api/courses/:id', courses.getCourseById);
 
     app.get('/partials/*', function (req, res) {
+        console.log(req.params[0]);
         res.render('../../public/app/' + req.params[0]);
     });
 
@@ -30,9 +35,11 @@ module.exports = function(app) {
         res.send(404);
     });
 
-    app.get('*', function (req, res) {
+    app.get('/', function (req, res) {
         res.render('index', {
-            bootstrappedUser: req.user
+            bootstrappedUser: req.user,
+            isDevelopment: environment(env)
         })
+
     });
 }

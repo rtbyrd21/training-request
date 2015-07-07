@@ -24,9 +24,10 @@ module.exports = function(app, config) {
     app.use(passport.session());
     app.use(stylus.middleware(
         {
-            src: config.rootPath + '/public',
+            src: config.rootPath + config.staticFolder,
             compile: compile
         }
     ));
-    app.use(express.static(config.rootPath + '/public'));
+    app.use(express.static(config.rootPath + config.staticFolder));
+    app.use(express.static(config.rootPath + '.tmp'));
 }
