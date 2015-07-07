@@ -3,6 +3,7 @@ module.exports = function(){
   var client = './public/';
   var clientApp = client + 'app/';
   var server = './server/';
+  var root = './';
   var temp = client + 'tmp/';
   var tempClean = client + 'tmp/';
   var build = './build/';
@@ -35,9 +36,19 @@ module.exports = function(){
             clientApp + 'app.js',
             clientApp + '**/*.js'
       ],
-      sass: client + 'styles/styles.scss',
+      root:root,
+      sass: client + 'styles/**.*scss',
       server: ['./server/', 'server.js'],
       temp: temp,
+
+      /*
+       * Optimized filenames
+       */
+      optimized: {
+            app: 'app.js',
+            lib: 'lib.js'
+      },
+
 
       /*
        * templateCache
@@ -69,6 +80,10 @@ module.exports = function(){
           directory: client + '/vendor/',
           ignorePath: '../../public'
       },
+      packages: [
+        './package.json',
+          './bower.json'
+      ],
 
       /*
        * Node settings

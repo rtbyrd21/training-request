@@ -23,6 +23,8 @@
     "angular-route": "~1.4.1",
     "bootstrap": "~3.3.5",
     "angular-mocks": "~1.4.1",
-    "ui-router": "~0.2.15"
+    "ui-router": "~0.2.15",
+    "susy": "~2.2.5",
+    "breakpoint-sass": "~2.6.1"
   }
 }

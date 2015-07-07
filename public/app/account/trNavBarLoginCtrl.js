@@ -1,6 +1,6 @@
 angular.module('app').controller('trNavBarLoginCtrl', function($scope, $http, $location, trAuth, trNotifier, trIdentity){
     $scope.identity = trIdentity;
-    $scope.signin = function(username, password){
+    $scope.signin = function(username, password){ /* @ngInject */
         trAuth.authenticateUser(username, password)
             .then(function(success){
                 if(success){
@@ -11,7 +11,7 @@ angular.module('app').controller('trNavBarLoginCtrl', function($scope, $http, $l
             });
     }
 
-    $scope.signout = function(){
+    $scope.signout = function(){ /* @ngInject */
         trAuth.logoutUser().then(function(){
             $scope.username = "";
             $scope.password = "";

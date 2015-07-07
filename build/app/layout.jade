@@ -1,101 +1,39 @@
-doctype
+doctype html
 html
-    head
-        //link(href="/favicon.ico", rel="shortcut icon", type="image/x-icon")
-        title Fusion Alliance Training Request
-
-        //build:css css/lib.css
-        //bower:css
-        link(rel='stylesheet', href='/vendor/toastr/toastr.min.css')
-        link(rel='stylesheet', href='/vendor/bootstrap/dist/css/bootstrap.min.css')
-        //endbower
-        //endbuild
-
-
-        //build:css css/app.css
-        //- inject:css
-
-        link(rel="stylesheet", href="/tmp/styles.css")
-
-        //- endinject
-        //endbuild
-
-        base(href="/")
-        body(ng-app='app')
-        if !!bootstrappedUser
-            script.
-                window.bootstrappedUserObject = !{JSON.stringify(bootstrappedUser)}
-        //block main-content
-        .navbar.navbar-inverse.navbar-fixed-top
-            .container
-                .navbar-header
-                    a.navbar-brand(href="/") Training Request
-                        h6 Training Request Form
-                .navbar-collapse.collapse
-                    ul.nav.navbar-nav
-                        li
-                            a(href="/") Home
-                        li
-                            a(href="/courses") Courses
-                    div(ng-include="'partials/account/navbar-login'")
-        section.content
-            div(ng-view)
-
-        footer.container.text-center
-
-        //build:js js/lib.js
-        //bower:js
-        script(src='/vendor/jquery/dist/jquery.js')
-        script(src='/vendor/toastr/toastr.min.js')
-        script(src='/vendor/angular/angular.js')
-        script(src='/vendor/angular-resource/angular-resource.js')
-        script(src='/vendor/angular-route/angular-route.js')
-        script(src='/vendor/bootstrap/dist/js/bootstrap.min.js')
-        script(src='/vendor/angular-mocks/angular-mocks.js')
-        script(src='/vendor/ui-router/release/angular-ui-router.js')
-        //endbower
-        //endbuild
-
-        //build:js js/app.js
-
-        //- inject:js
-
-        script(src="/app/app.js")
-
-        script(src="/app/account/trAuth.js")
-
-        script(src="/app/account/trIdentity.js")
-
-        script(src="/app/account/trNavBarLoginCtrl.js")
-
-        script(src="/app/account/trProfileCtrl.js")
-
-        script(src="/app/account/trSignupCtrl.js")
-
-        script(src="/app/account/trUser.js")
-
-        script(src="/app/admin/trUserListCtrl.js")
-
-        script(src="/app/common/trNotifier.js")
-
-        script(src="/app/courses/trCachedCourses.js")
-
-        script(src="/app/courses/trCourse.js")
-
-        script(src="/app/courses/trCourseDetailCtrl.js")
-
-        script(src="/app/courses/trCourseListCtrl.js")
-
-        script(src="/app/main/trMainCtrl.js")
-
-        //- endinject
-
-
-
-        //- inject:templates
-        script(src="/tmp/templates.js")
-        //- endinject
-        //endbuild
-
-
-
+  head
+    // link(href="/favicon.ico", rel="shortcut icon", type="image/x-icon")
+    title Fusion Alliance Training Request
+    |     
+    link(rel='stylesheet', href='css/lib-b8e970658d.css')
+    |     
+    |     
+    link(rel='stylesheet', href='css/app-f3503cbc77.css')
+    |     
+    base(href='/')
+  body(ng-app='app')
+  // block main-content
+  .navbar.navbar-inverse.navbar-fixed-top
+    .container
+      .navbar-header
+        a.navbar-brand(href='/')
+          | Training Request
+          h6 Training Request Form
+      |         
+      .navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li
+            a(href='/') Home
+          |             
+          li
+            a(href='/courses') Courses
+        |           
+        div(ng-include="'partials/account/navbar-login'")
+  |     
+  section.content
+    div(ng-view='')
+  |     
+  footer.container.text-center
+  |     
+  script(src='js/lib-ef4ad6905d.js')
+  |     
+  script(src='js/app-74d9ae55ff.js')

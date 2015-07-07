@@ -1,9 +1,3 @@
 body {
-  padding-top: 120px; }
-
-h2 {
-  color: black; }
-
-.style-test {
-  -webkit-transform-origin: center bottom;
-          transform-origin: center bottom; }
+  background: #bea85e;
+  color: #1b6e88; }
